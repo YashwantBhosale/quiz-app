@@ -40,16 +40,21 @@ const generateOTP = async (req, res) => {
 	}
 };
 
-// Function to verify OTP
+// Function to verify OTP and signup
 const verifyOTP = async (req, res) => {
     try {
-        const { email, otp, purpose } = req.body;
+        const { name, rollno, email, phone, password, otp, purpose } = req.body;
+
+        // Verify the OTP
         const isValid = await OTP.verifyOTP(email, otp, purpose);
         if (!isValid) {
             return res.status(400).json({ message: "Invalid OTP" });
         }
 
-        res.status(200).json({ message: "OTP verified" });
+        // Signup the user after successful OTP verification
+        const newStudent = await Student.signup(name, rollno, email, phone, password);
+
+        res.status(200).json({ message: "OTP verified and signup successful", student: newStudent });
     } catch (e) {
         console.log(e);
         res
@@ -57,6 +62,7 @@ const verifyOTP = async (req, res) => {
             .json({ message: "Internal server error", error: e.message });
     }
 };
+
 
 // Login function
 const login = async (req, res) => {
@@ -68,20 +74,6 @@ const login = async (req, res) => {
         }
 
         res.status(200).json({ message: "Login successful", student });
-    } catch (e) {
-        console.log(e);
-        res
-            .status(500)
-            .json({ message: "Internal server error", error: e.message });
-    }
-};
-
-// Signup function
-const signup = async (req, res) => {
-    try {
-        const { name, rollno, email, phone, password } = req.body;
-        const student = await Student.signup(name, rollno, email, phone, password);
-        res.status(200).json({ message: "Signup successful", student });
     } catch (e) {
         console.log(e);
         res

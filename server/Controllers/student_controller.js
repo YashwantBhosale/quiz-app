@@ -2,6 +2,7 @@ const Student = require("../Models/student_model");
 const { sendEmail } = require("../lib/sendEmail");
 const dotenv = require("dotenv");
 const OTP = require("../Models/otp_model");
+const jwt = require("jsonwebtoken");
 
 dotenv.config();
 
@@ -54,7 +55,11 @@ const verifyOTP = async (req, res) => {
         // Signup the user after successful OTP verification
         const newStudent = await Student.signup(name, rollno, email, phone, password);
 
-        res.status(200).json({ message: "OTP verified and signup successful", student: newStudent });
+        const token = jwt.sign({ email: newStudent.email }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+        });        
+
+        res.status(200).json({ message: "OTP verified and signup successful", student: newStudent, token });
     } catch (e) {
         console.log(e);
         res
@@ -73,7 +78,12 @@ const login = async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        res.status(200).json({ message: "Login successful", student });
+        // Generate token
+        const token = jwt.sign({ email: student.email }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+        });
+
+        res.status(200).json({ message: "Login successful", student, token });
     } catch (e) {
         console.log(e);
         res
@@ -86,5 +96,5 @@ module.exports = {
     generateOTP,
     verifyOTP,
     login,
-    signup
+    // signup
 }

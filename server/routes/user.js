@@ -3,7 +3,7 @@ const {
     generateOTP,
     verifyOTP,
     login,
-} = require('../Controllers/student_controller');
+} = require('../Controllers/user_controller');
 
 const router = express.Router();
 

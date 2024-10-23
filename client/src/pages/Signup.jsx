@@ -80,7 +80,7 @@ const Signup = () => {
 					loading: false,
 					error: null,
 				}));
-				navigate("/dashboard");
+ 				navigate("/dashboard");
 			} else {
 				const error = await response.json();
 				alert(error.message);

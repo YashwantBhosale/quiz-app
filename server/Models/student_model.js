@@ -31,6 +31,10 @@ const studentSchema = new mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Quiz'
             },
+            attempts: {
+                type: Number,
+                default: 0
+            },
             score: {
                 type: Number
             }

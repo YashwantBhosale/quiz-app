@@ -6,10 +6,11 @@ import Dashboard from "./pages/Dashboard";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import ProtectedRoutes from "./components/ProtectedRoute";
+import AdminLogin from "./pages/Admin/AdminLogin";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import CreateQuiz from "./pages/Admin/CreateQuiz";
 
 function App() {
-	const [count, setCount] = useState(0);
-
 	return (
 		<>
 			<Provider store={store}>
@@ -23,6 +24,25 @@ function App() {
 						element={
 							<ProtectedRoutes role="user">
 								<Dashboard />
+							</ProtectedRoutes>
+						}
+					/>
+
+					<Route path="/adminlogin" element={<AdminLogin />} />
+
+					<Route
+						path="/admindashboard"
+						element={
+							<ProtectedRoutes role="admin">
+								<AdminDashboard />
+							</ProtectedRoutes>
+						}
+					/>
+					<Route
+						path="/createquiz"
+						element={
+							<ProtectedRoutes role="admin">
+								<CreateQuiz />
 							</ProtectedRoutes>
 						}
 					/>

@@ -62,8 +62,19 @@ const createQuiz = async (req, res) => {
     }
 }
 
+const getQuizzes = async (req, res) => {
+    try {
+        const quizzes = await Quiz.find({ createdBy: req.adminId });
+        res.status(200).json({ message: 'Quizzes fetched successfully', quizzes });
+    }catch(e) {
+        console.log(e);
+        res.status(500).json({ message: 'Internal server error', error: e.message });
+    }
+}
+
 module.exports = {
     signup,
     login,
-    createQuiz
+    createQuiz,
+    getQuizzes,
 };

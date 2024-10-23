@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import TextInput from "../../components/ui/TextInput";
+import { useNavigate } from "react-router-dom";
 import DateTimePicker from "../../components/ui/DateTimePicker";
+import BackButton from "../../components/ui/BackButton";
 
 const BASE_URL = "http://localhost:4000";
 
 const CreateQuiz = () => {
 	// title, subject, description, startsAt, endsAt, duration, total_marks, passing_marks, max_attempts
+    const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		title: "",
 		subject: "",
@@ -123,8 +126,9 @@ const CreateQuiz = () => {
     }
 
 	return (
-		<div className=" mt-[50px] ml-[30px]">
+		<div className=" mt-[50px] ml-[80px]">
 			<h1 className="font-bold text-3xl">Create New Quiz</h1>
+<BackButton />
 			<form className="mt-5 space-y-4 md:space-y-6 my-8" onSubmit={handleSubmit}>
 				<TextInput
 					label="Title"

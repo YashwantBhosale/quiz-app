@@ -9,6 +9,7 @@ import ProtectedRoutes from "./components/ProtectedRoute";
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import CreateQuiz from "./pages/Admin/CreateQuiz";
+import ViewQuizzes from "./pages/Admin/ViewQuizzes";
 
 function App() {
 	return (
@@ -43,6 +44,14 @@ function App() {
 						element={
 							<ProtectedRoutes role="admin">
 								<CreateQuiz />
+							</ProtectedRoutes>
+						}
+					/>
+					<Route
+						path="/viewquizzes"
+						element={
+							<ProtectedRoutes role="admin">
+								<ViewQuizzes />
 							</ProtectedRoutes>
 						}
 					/>

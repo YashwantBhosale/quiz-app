@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { logout } from "../../redux/slices/authSlice";
 import ideaIcon from "../../assets/images/idea.png";
 import listIcon from "../../assets/images/list.png";
-
+import viewquizIcon from "../../assets/images/viewquiz.png";
 
 const AdminDashboard = () => {
 	const navigate = useNavigate();
@@ -42,6 +42,16 @@ const AdminDashboard = () => {
 					/>
 					<button onClick={e => navigate('/createquiz')} className="text-xl bg-green-500 text-white text-center px-5 py-5 mt-[20px] w-full">
 						Create Quiz &#8594;
+					</button>
+				</div>
+                <div className="shadow-[0_3px_10px_rgb(0,0,0,0.2)] w-[30%] max-w-[300px] mt-[100px] rounded-xl pt-[25px] overflow-hidden">
+					<img
+						src={viewquizIcon}
+						alt="idea"
+						className="w-[150px] h-[150px] mx-auto block my-[30px]"
+					/>
+					<button onClick={e => navigate('/viewquizzes')} className="text-xl bg-green-500 text-white text-center px-5 py-5 mt-[20px] w-full">
+						View Quizzes &#8594;
 					</button>
 				</div>
 

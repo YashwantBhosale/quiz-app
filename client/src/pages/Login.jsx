@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { loginRequest, loginSuccess, selectAuth } from "../redux/slices/authSlice";
+import { jwtDecode } from "jwt-decode";
 
 const BASE_URL = "http://localhost:4000";
 
@@ -37,7 +38,18 @@ const Login = () => {
 			});
 			if (response.ok) {
 				const data = await response.json();
+				
+				const user_data = {
+					user: data.student,
+					token: data.token,
+					role: "user",
+					isAuthenticated: true,
+					loading: false,
+					error: null,
+				}
+
 				sessionStorage.setItem("token", data.token);
+				sessionStorage.setItem("user_data", JSON.stringify(user_data));
 
 				dispatch(loginSuccess({
 					user: data.student,
@@ -51,6 +63,7 @@ const Login = () => {
 				navigate("/dashboard");
 			} else {
 				const error = await response.json();
+				
 				alert(error.message);
 			}
 		} catch (e) {

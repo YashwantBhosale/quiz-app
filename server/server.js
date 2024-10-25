@@ -13,6 +13,7 @@ const MONGO_URI = process.env.MONGO_URI;
 const userRouter = require("./routes/user");
 const { adminAuthRouter, adminMainRouter } = require("./routes/admin");
 const studentRouter = require("./routes/student");
+const quizRouter = require("./routes/quiz");
 
 app.use(
 	cors({
@@ -25,6 +26,7 @@ app.use("/api/user", userRouter);
 app.use("/api/admin/auth", adminAuthRouter);
 app.use("/api/admin", adminMainRouter);
 app.use("/api/student", studentRouter);
+app.use("/api/quiz", quizRouter);
 
 app.get("/", (req, res) => {
 	res.send("Welcome to the quiz application api!");

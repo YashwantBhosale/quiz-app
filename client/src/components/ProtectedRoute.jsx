@@ -6,12 +6,14 @@ import { selectAuth } from "../redux/slices/authSlice";
 const ProtectedRoutes = ({ children, role }) => {
     const { isAuthenticated, role: userRole } = useSelector(selectAuth);
     if (!isAuthenticated) {
+        console.log("Not authenticated");
         return <Navigate to="/login" />;
     }
 
     /* if role of the user is not same as allowed role */
     if (role && role !== userRole) {
-        return <Navigate to="/login" />;
+        alert("You are not authorized to view this page");
+        return <Navigate to='/dashboard' />;
     }
 
     return children;

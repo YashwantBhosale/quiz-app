@@ -1,5 +1,6 @@
 const Student = require("../Models/student_model");
 const Quiz = require("../Models/quiz_model");
+const Attempt = require("../Models/attempt_model");
 
 const getQuizes = async (req, res) => {
     try {
@@ -32,7 +33,33 @@ const getQuizById = async (req, res) => {
     }
 }
 
+const startQuiz = async (req, res) => {
+    try {
+        const {quizId, studentId, startedAt} = req.body;
+        const attempt = await Attempt.startQuiz(quizId, studentId, startedAt);
+        res.status(200).json({attempt});
+        
+    }catch(e) {
+        console.log(e);
+        res.status(500).json({ message: "Internal server error", error: e.message });
+    }
+}
+
+const getQuizAndQuestions = async (req, res) => {
+    try{
+        const {quizId} = req.params;
+        const quiz = await Quiz.getPopulatedQuiz(quizId);
+        res.status(200).json({quiz});
+    }catch(e){
+        console.log(e);
+        res.status(500).json({ message: "Internal server error", error: e.message });
+    }
+
+}
+
 module.exports = {
     getQuizes,
     getQuizById,
+    startQuiz,
+    getQuizAndQuestions
 }

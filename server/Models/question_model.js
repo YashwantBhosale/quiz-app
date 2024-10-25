@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Quiz = require("./quiz_model");
 
 const questionSchema = new mongoose.Schema({
 	title: {
@@ -43,7 +44,12 @@ questionSchema.statics.createQuestion = async function (
 	quiz_id,
 	attachments
 ) {
-	return this.create({
+	const quiz = await Quiz.findOne({ _id: quiz_id });
+	if (!quiz) {
+		throw new Error("Quiz not found! Invalid id");
+	}
+
+	const newQuestion = await this.create({
 		title,
 		question,
 		options,
@@ -52,6 +58,11 @@ questionSchema.statics.createQuestion = async function (
 		quiz: quiz_id,
 		attachments,
 	});
+
+	quiz.questions.push(newQuestion._id);
+	await quiz.save();
+
+	return newQuestion;
 };
 
 questionSchema.statics.getQuestion = async function (question_id) {
@@ -59,7 +70,10 @@ questionSchema.statics.getQuestion = async function (question_id) {
 };
 
 questionSchema.statics.getQuestions = async function (quiz_id) {
-	return this.find({ quiz: quiz_id });
+	console.log("quiz_id: ", quiz_id);
+	const questions = await this.find({ quiz: quiz_id });
+	console.log(questions);
+	return questions;
 };
 
 questionSchema.statics.updateQuestion = async function (
@@ -71,10 +85,13 @@ questionSchema.statics.updateQuestion = async function (
 	marks,
 	attachments
 ) {
-	return this.updateOne(
-		{
-			_id: question_id,
-		},
+	const _quiz = await Quiz.findOne({ _id: quiz_id });
+	if (!_quiz) {
+		throw new Error("Quiz not found! Invalid id");
+	}
+
+	return this.findOneAndUpdate(
+		{ _id: question_id },
 		{
 			title,
 			question,

@@ -48,7 +48,7 @@ const ViewQuizzes = () => {
 	return (
 		<div className=" mt-[50px] ml-[30px]">
 			<h1 className="font-bold text-3xl">View Quizzes</h1>
-			<BackButton />
+			<BackButton path={"admindashboard"}/>
 			{loading ? (
 				<p>Loading...</p>
 			) : (

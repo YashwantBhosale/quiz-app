@@ -1,0 +1,69 @@
+{
+    "questions": [
+      {
+        "title": "Question 1",
+        "question": "What is Economics?",
+        "options": [
+          "The study of markets and trading only",
+          "The study of how societies allocate scarce resources",
+          "The study of human behavior and psychology",
+          "The study of how to create money and wealth"
+        ],
+        "correct_option": 1,
+        "marks": "2",
+        "attachments": []
+      },
+      {
+        "title": "Question 2",
+        "question": "What is the primary focus of Microeconomics?",
+        "options": [
+          "The behavior of individual markets and firms",
+          "The study of inflation and unemployment",
+          "The analysis of national economic growth",
+          "The allocation of resources in a global context"
+        ],
+        "correct_option": 0,
+        "marks": "2",
+        "attachments": []
+      },
+      {
+        "title": "Question 3",
+        "question": "Which of the following is an example of a positive economic statement?",
+        "options": [
+          "The government should reduce taxes to increase spending",
+          "Higher taxes lead to lower consumer spending",
+          "Inflation is bad for the economy",
+          "The minimum wage ought to be increased"
+        ],
+        "correct_option": 1,
+        "marks": "2",
+        "attachments": []
+      },
+      {
+        "title": "Question 4",
+        "question": "What is meant by opportunity cost?",
+        "options": [
+          "The total cost of producing goods",
+          "The cost of choosing one alternative over another",
+          "The amount of money required to invest in a project",
+          "The profit made from a business decision"
+        ],
+        "correct_option": 1,
+        "marks": "2",
+        "attachments": []
+      },
+      {
+        "title": "Question 5",
+        "question": "In a perfectly competitive market, firms are:",
+        "options": [
+          "Price takers",
+          "Price makers",
+          "Monopolies",
+          "Cartels"
+        ],
+        "correct_option": 0,
+        "marks": "2",
+        "attachments": []
+      }
+    ]
+  }

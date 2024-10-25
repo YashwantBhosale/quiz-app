@@ -57,7 +57,7 @@ const verifyOTP = async (req, res) => {
         const newStudent = await Student.signup(name, rollno, email, phone, password);
 
         const token = jwt.sign({ email: newStudent.email }, process.env.JWT_SECRET, {
-            expiresIn: "1h",
+            expiresIn: "6h",
         });        
 
         res.status(200).json({ message: "OTP verified and signup successful", student: newStudent, token });
@@ -81,7 +81,7 @@ const login = async (req, res) => {
 
         // Generate token
         const token = jwt.sign({ _id: student._id, email: student.email }, process.env.JWT_SECRET, {
-            expiresIn: "1h",
+            expiresIn: "6h",
         });
 
         res.status(200).json({ message: "Login successful", student, token });

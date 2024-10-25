@@ -46,10 +46,10 @@ const quizSchema = new mongoose.Schema({
 			ref: "Question",
 		},
 	],
-    attempters: [
+    attempts: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Student",
+            ref: "Attempt",
         },
     ],
     createdBy: {
@@ -73,6 +73,15 @@ quizSchema.statics.createQuiz = async function (title, subject, description, sta
         createdBy
     });
     const quiz = await newQuiz.save();
+    return quiz;
+}
+
+quizSchema.statics.getPopulatedQuiz = async function (quizId) {
+    const quiz = await this.findById(quizId).populate({
+        path: "questions",
+        select: "-correct_option"
+    });
+ 
     return quiz;
 }
 

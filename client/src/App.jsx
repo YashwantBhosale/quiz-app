@@ -13,6 +13,7 @@ import ViewQuizzes from "./pages/Admin/ViewQuizzes";
 import ViewStudentQuizzes from "./pages/Quiz/ViewQuizzes";
 import { loginSuccess, logout } from "./redux/slices/authSlice";
 import ViewStudentQuiz from "./pages/Quiz/ViewQuiz";
+import Quiz from "./pages/Quiz/Quiz";
 
 function App() {
 	let data = sessionStorage.getItem("user_data");
@@ -67,7 +68,14 @@ function App() {
 						</ProtectedRoutes>
 					}
 				/>
-
+				<Route
+					path="/quiz/:quizId"
+					element={
+						<ProtectedRoutes role="user">
+							<Quiz />
+						</ProtectedRoutes>
+					}
+				/>
 
 				<Route path="/adminlogin" element={<AdminLogin />} />
 

@@ -8,7 +8,7 @@ const BASE_URL = "http://localhost:4000";
 
 const CreateQuiz = () => {
 	// title, subject, description, startsAt, endsAt, duration, total_marks, passing_marks, max_attempts
-    const navigate = useNavigate();
+	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		title: "",
 		subject: "",
@@ -64,72 +64,73 @@ const CreateQuiz = () => {
 		formData.endsAtTime,
 	]);
 
-    // calculate duration from startsAt and endsAt
-    function getDuration(startsAt, endsAt) {
-        const diff = new Date(endsAt) - new Date(startsAt);
-        return Math.floor(diff / 60000);
-    }
+	// calculate duration from startsAt and endsAt
+	function getDuration(startsAt, endsAt) {
+		const diff = new Date(endsAt) - new Date(startsAt);
+		return Math.floor(diff / 60000);
+	}
 
-    const handleSubmit = async (e) => {
-        try {
-            e.preventDefault();
+	const handleSubmit = async (e) => {
+		try {
+			e.preventDefault();
 
-            const formdata = {
-                title: formData.title,
-                subject: formData.subject,
-                description: formData.description,
-                startsAt: formData.startsAt,
-                endsAt: formData.endsAt,
-                duration: getDuration(formData.startsAt, formData.endsAt),
-                total_marks: formData.total_marks,
-                passing_marks: formData.passing_marks,
-                max_attempts: formData.max_attempts,
-            }
+			const formdata = {
+				title: formData.title,
+				subject: formData.subject,
+				description: formData.description,
+				startsAt: formData.startsAt,
+				endsAt: formData.endsAt,
+				duration: getDuration(formData.startsAt, formData.endsAt),
+				total_marks: formData.total_marks,
+				passing_marks: formData.passing_marks,
+				max_attempts: formData.max_attempts,
+			};
 
-            const response = await fetch(`${BASE_URL}/api/admin/createquiz`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(formdata),
-            });
-            if(response.ok) {
-                const data = await response.json();
-                alert(data.message);
-            } else {
-                const error = await response.json();
-                alert(error.message);
-            }
-
-        } catch(e) {
-            console.log(e);
-            alert("An error occurred. Please try again later!");
-        }
-        finally {
-            setFormData({
-                title: "",
-                subject: "",
-                description: "",
-                startsAtDate: "",
-                startsAtTime: "",
-                endsAtDate: "",
-                endsAtTime: "",
-                startsAt: "",
-                endsAt: "",
-                duration: "",
-                total_marks: "",
-                passing_marks: "",
-                max_attempts: "",
-            });
-        }
-    }
+			const response = await fetch(`${BASE_URL}/api/admin/createquiz`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+				},
+				body: JSON.stringify(formdata),
+			});
+			if (response.ok) {
+				const data = await response.json();
+				alert(data.message);
+			} else {
+				const error = await response.json();
+				alert(error.message);
+			}
+		} catch (e) {
+			console.log(e);
+			alert("An error occurred. Please try again later!");
+		} finally {
+			setFormData({
+				title: "",
+				subject: "",
+				description: "",
+				startsAtDate: "",
+				startsAtTime: "",
+				endsAtDate: "",
+				endsAtTime: "",
+				startsAt: "",
+				endsAt: "",
+				duration: "",
+				total_marks: "",
+				passing_marks: "",
+				max_attempts: "",
+			});
+		}
+	};
 
 	return (
 		<div className=" mt-[50px] ml-[80px]">
 			<h1 className="font-bold text-3xl">Create New Quiz</h1>
-<BackButton />
-			<form className="mt-5 space-y-4 md:space-y-6 my-8" onSubmit={handleSubmit}>
+			<BackButton path={"/admindashboard"} />
+			<form
+				className="mt-5 space-y-4 md:space-y-6 my-8"
+				onSubmit={handleSubmit}
+			>
 				<TextInput
 					label="Title"
 					id="title"
@@ -203,12 +204,12 @@ const CreateQuiz = () => {
 					placeholder="Enter the max attempts"
 					required
 				/>
-                <button
-                    type="submit"
-                    className="bg-green-500 text-white px-5 py-3 rounded-md font-bold"
-                >
-                    Create Quiz
-                </button>
+				<button
+					type="submit"
+					className="bg-green-500 text-white px-5 py-3 rounded-md font-bold"
+				>
+					Create Quiz
+				</button>
 			</form>
 		</div>
 	);

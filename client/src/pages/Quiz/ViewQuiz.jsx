@@ -71,7 +71,6 @@ const ViewQuiz = () => {
 					<p className="text-gray-600 text-lg">{quiz.description}</p>
 
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						{/* Time Information */}
 						<div className="grid gap-2 text-sm text-gray-600">
 							<div className="flex items-center">
 								<span className="font-medium w-24">Duration:</span>
@@ -94,7 +93,6 @@ const ViewQuiz = () => {
 							</div>
 						</div>
 
-						{/* Quiz Stats */}
 						<div className="bg-blue-50 rounded-md p-4">
 							<h3 className="font-semibold text-lg text-gray-900 mb-3">
 								Quiz Information
@@ -124,7 +122,6 @@ const ViewQuiz = () => {
 						</div>
 					</div>
 
-					{/* Rules Section */}
 					<div className="bg-gray-50 rounded-md p-4">
 						<h3 className="font-semibold text-lg text-gray-900 mb-3">
 							Quiz Rules
@@ -139,7 +136,6 @@ const ViewQuiz = () => {
 						</ul>
 					</div>
 
-					{/* Start Button */}
 					<div className="pt-4 border-t border-gray-200 flex items-center justify-end">
 						<button
 							onClick={() => navigate('/quiz/' + quizId)}

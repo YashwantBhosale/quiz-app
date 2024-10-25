@@ -49,6 +49,15 @@ const getQuizAndQuestions = async (req, res) => {
     try{
         const {quizId} = req.params;
         const quiz = await Quiz.getPopulatedQuiz(quizId);
+        const date = new Date();
+
+        if (quiz.startsAt > date) {
+            return res.status(400).json({ message: "Quiz not started yet" });
+        }
+        else if (quiz.endsAt < date) {
+            return res.status(400).json({ message: "Quiz has ended" });
+        }
+
         res.status(200).json({quiz});
     }catch(e){
         console.log(e);
@@ -57,9 +66,39 @@ const getQuizAndQuestions = async (req, res) => {
 
 }
 
+const submitQuiz = async (req, res) => {
+    try {
+        const {quizId, studentId, attempt, attemptId} = req.body;
+        const _attempt = await Attempt.submitQuiz(quizId, studentId, attemptId, attempt.answers);
+
+        _attempt.populate('quiz');
+
+
+        res.status(200).json({attempt});
+    }catch(e) {
+        console.log(e);
+        res.status(500).json({ message: "Internal server error", error: e.message });
+    }
+}
+
+const getAttemptById = async (req, res) => {
+    try {
+        const attempt = await Attempt.findById(req.params.id);
+        if (!attempt) {
+            return res.status(404).json({ message: "Attempt not found" });
+        }
+        res.status(200).json({ attempt });
+    } catch (e){
+        console.log(e);
+        res.status(500).json({ message: "Internal server error", error: e.message });
+    }
+}
+
 module.exports = {
     getQuizes,
     getQuizById,
     startQuiz,
-    getQuizAndQuestions
+    getQuizAndQuestions,
+    submitQuiz,
+    getAttemptById
 }

@@ -6,6 +6,7 @@
 const mongoose = require('mongoose');
 const Quiz = require('./quiz_model');
 const Student = require('./student_model');
+const Question = require('./question_model');
 
 const attemptSchema = new mongoose.Schema({
     quiz: {
@@ -27,7 +28,9 @@ const attemptSchema = new mongoose.Schema({
             },
             selected_option: {
                 type: Number,
-                required: true
+            }, 
+            correct_option: {
+                type: Number,
             }
         }
     ],
@@ -74,13 +77,51 @@ attemptSchema.statics.startQuiz = async function (quizId, studentId, startedAt) 
     
     quiz.attempts?.push(attempt._id);
     
-    student.quizes_taken?.push({
-        quiz_id: quizId,
-        attempts: attempt._id
-    });
+    const existingQuiz = student.quizes_taken.find(q => q.quiz_id.toString() === quizId.toString());
+    if (existingQuiz) {
+        existingQuiz.attempts.push(attempt._id);
+    } else {
+        student.quizes_taken.push({
+            quiz_id: quizId,
+            attempts: [attempt._id]
+        });
+    }
 
     await quiz.save();
     await student.save();
+    return attempt;
+}
+
+attemptSchema.statics.submitQuiz = async function (attemptId, answers, endedAt) {
+    const attempt = await this.findById(attemptId);
+    if (!attempt) {
+        throw new Error('Attempt not found');
+    }
+
+    attempt.answers = answers;
+    attempt.endedAt = endedAt;
+    attempt.time_taken = (endedAt - attempt.startedAt) / 1000;
+    attempt.score = 0;
+    attempt.max_score = 0;
+
+    const quiz = await Quiz.findById(attempt.quiz);
+    for (let i = 0; i < answers.length; i++) {
+        const question = await Question.findById(answers[i].question);
+        if (!question) {
+            throw new Error('Question not found');
+        }
+        if (answers[i].selected_option === question.correct_option) {
+            attempt.score += question.marks;
+        }
+        attempt.max_score += question.marks;
+    }
+
+    await attempt.save();
+    
+    quiz.attempts?.push(attempt._id);
+    await quiz.save();
+
+
     return attempt;
 }
 

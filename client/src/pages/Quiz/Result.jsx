@@ -69,7 +69,7 @@ const Result = () => {
                         </h2>
                         <p className="text-gray-600 mb-6">{answer.question.question}</p>
                         <div className="space-y-3">
-                            {answer.question.options.map((option, i) => (
+                            {answer.question?.options?.map((option, i) => (
                                 <div
                                     key={i}
                                     className={`p-4 rounded-lg border ${

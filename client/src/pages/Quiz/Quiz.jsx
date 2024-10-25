@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectAuth } from "../../redux/slices/authSlice";
 
 const Quiz = () => {
+    const navigate = useNavigate();
 	const { quizId } = useParams();
+	const [searchParams] = useSearchParams();
+	const attemptId = searchParams.get("attemptId");
+
 	const [quiz, setQuiz] = useState(null);
 	const [questions, setQuestions] = useState([]);
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 	const [selectedAnswers, setSelectedAnswers] = useState({});
 	const [timeLeft, setTimeLeft] = useState(null);
-	const { token } = useSelector(selectAuth);
+	const { token, user } = useSelector(selectAuth);
 	const BASE_URL = "http://localhost:4000";
 
 	const fetchPopulatedQuiz = async () => {
@@ -48,14 +52,10 @@ const Quiz = () => {
 		fetchPopulatedQuiz();
 
 		if (sessionStorage.getItem(`quiz_answers_${quizId}`)) {
-			console.log("Answers found in session storage");
 			let answers = JSON.parse(
 				sessionStorage.getItem(`quiz_answers_${quizId}`)
 			);
-			console.log(answers);
 			setSelectedAnswers(answers);
-		} else {
-			console.log("No answers found in session storage");
 		}
 	}, []);
 
@@ -74,30 +74,18 @@ const Quiz = () => {
 		return () => clearInterval(timer);
 	}, [timeLeft]);
 
-	const handleAnswerSelect = (questionId, selectedOption) => {
+	const handleAnswerSelect = (questionId, selectedIndex) => {
 		const newAnswers = {
 			...selectedAnswers,
-			[questionId]: selectedOption,
+			[questionId]: selectedIndex, // Store index instead of option text
 		};
 
 		setSelectedAnswers(newAnswers);
-
-		// const answersArray = Object.entries(newAnswers).map(
-		// 	([questionId, selectedOption]) => ({
-		// 		question_id: questionId,
-		// 		selected_option: selectedOption,
-		// 	})
-		// );
-
-		// sessionStorage.setItem(
-		// 	`quiz_answers_${quizId}`,
-		// 	JSON.stringify(answersArray)
-		// );
-
-        sessionStorage.setItem(`quiz_answers_${quizId}`, JSON.stringify(newAnswers));
-    };
-
-
+		sessionStorage.setItem(
+			`quiz_answers_${quizId}`,
+			JSON.stringify(newAnswers)
+		);
+	};
 
 	const handleNext = () => {
 		if (currentQuestionIndex < questions.length - 1) {
@@ -111,7 +99,42 @@ const Quiz = () => {
 		}
 	};
 
-	const handleQuizSubmit = () => {
+	const handleQuizSubmit = async () => {
+		try {
+			const answers = Object.entries(selectedAnswers).map(
+				([questionId, selectedIndex]) => ({
+					question: questionId,
+					selected_option_index: selectedIndex, // Store index in submission
+				})
+			);
+
+			const currentTime = new Date();
+
+			const response = await fetch(`${BASE_URL}/api/student/submitquiz`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({
+					quizId,
+					studentId: user._id,
+					answers,
+					endedAt: currentTime,
+					attemptId,
+				}),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				console.log(data);
+
+                navigate('/result' + attemptId);
+			}
+		} catch (e) {
+			console.log(e);
+		}
+
 		console.log("Submitting answers:", selectedAnswers);
 	};
 
@@ -167,7 +190,7 @@ const Quiz = () => {
 							<label
 								key={index}
 								className={`flex items-center p-4 rounded-lg border cursor-pointer transition-colors ${
-									selectedAnswers[currentQuestion._id] === option
+									selectedAnswers[currentQuestion._id] === index
 										? "border-blue-500 bg-blue-50"
 										: "border-gray-200 hover:bg-gray-50"
 								}`}
@@ -175,10 +198,10 @@ const Quiz = () => {
 								<input
 									type="radio"
 									name={`question-${currentQuestion._id}`}
-									value={option}
-									checked={selectedAnswers[currentQuestion._id] === option}
+									value={index} // Store index as value
+									checked={selectedAnswers[currentQuestion._id] === index}
 									onChange={() =>
-										handleAnswerSelect(currentQuestion._id, option)
+										handleAnswerSelect(currentQuestion._id, index)
 									}
 									className="w-4 h-4 text-blue-600"
 								/>

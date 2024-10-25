@@ -14,6 +14,7 @@ import ViewStudentQuizzes from "./pages/Quiz/ViewQuizzes";
 import { loginSuccess, logout } from "./redux/slices/authSlice";
 import ViewStudentQuiz from "./pages/Quiz/ViewQuiz";
 import Quiz from "./pages/Quiz/Quiz";
+import Result from "./pages/Quiz/Result";
 
 function App() {
 	let data = sessionStorage.getItem("user_data");
@@ -73,6 +74,14 @@ function App() {
 					element={
 						<ProtectedRoutes role="user">
 							<Quiz />
+						</ProtectedRoutes>
+					}
+				/>
+				<Route
+					path="/result/:quizId"
+					element={
+						<ProtectedRoutes role="user">
+							<Result />
 						</ProtectedRoutes>
 					}
 				/>

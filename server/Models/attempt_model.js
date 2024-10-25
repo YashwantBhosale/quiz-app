@@ -50,6 +50,10 @@ const attemptSchema = new mongoose.Schema({
     time_taken: {
         type: Number
     },
+    completed: {
+        type: Boolean,
+        default: false
+    }, 
     createdAt: {
         type: Date,
         default: Date.now
@@ -65,6 +69,7 @@ attemptSchema.statics.startQuiz = async function (quizId, studentId, startedAt) 
 
     const student_attempts = await this.find({ quiz: quizId, student: studentId });
     if (student_attempts.length >= quiz.max_attempts) {
+        console.log(student_attempts.length, quiz.max_attempts);
         throw new Error('You have already attempted this quiz');
     }
 
@@ -91,39 +96,57 @@ attemptSchema.statics.startQuiz = async function (quizId, studentId, startedAt) 
     await student.save();
     return attempt;
 }
-
 attemptSchema.statics.submitQuiz = async function (attemptId, answers, endedAt) {
     const attempt = await this.findById(attemptId);
     if (!attempt) {
         throw new Error('Attempt not found');
     }
 
-    attempt.answers = answers;
+    const validatedAnswers = answers.map(answer => ({
+        ...answer,
+        selected_option_index: Number(answer.selected_option_index), // Convert to number
+    }));
+
+    endedAt = new Date(endedAt);
+
+    if (!(endedAt instanceof Date)) {
+        throw new Error('Invalid date for attempt timing');
+    }
+
+    attempt.answers = validatedAnswers;
     attempt.endedAt = endedAt;
-    attempt.time_taken = (endedAt - attempt.startedAt) / 1000;
+    attempt.time_taken = (endedAt.getTime() - attempt.startedAt.getTime()) / 1000; // Convert to seconds
     attempt.score = 0;
     attempt.max_score = 0;
 
     const quiz = await Quiz.findById(attempt.quiz);
-    for (let i = 0; i < answers.length; i++) {
-        const question = await Question.findById(answers[i].question);
+    for (let i = 0; i < validatedAnswers.length; i++) {
+        const question = await Question.findById(validatedAnswers[i].question);
         if (!question) {
             throw new Error('Question not found');
         }
-        if (answers[i].selected_option === question.correct_option) {
+
+        // Compare the selected option index with the correct option index
+        if (validatedAnswers[i].selected_option_index === question.correct_option) {
+            attempt.answers[i].correct_option = question.correct_option;
+            attempt.answers[i].selected_option = validatedAnswers[i].selected_option_index
+
             attempt.score += question.marks;
         }
         attempt.max_score += question.marks;
     }
 
+    attempt.completed = true;
     await attempt.save();
     
+    await attempt.populate("answers.question");
+
     quiz.attempts?.push(attempt._id);
     await quiz.save();
 
-
     return attempt;
-}
+};
+
 
 const Attempt = mongoose.model('Attempt', attemptSchema);
 module.exports = Attempt;

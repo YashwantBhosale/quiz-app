@@ -10,7 +10,7 @@ const ViewQuiz = () => {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 	// const quizId = searchParams.get("quizId");
-	const { token } = useSelector(selectAuth);
+	const { token, user } = useSelector(selectAuth);
 	const { quizId } = useParams();
 	const [quiz, setQuiz] = useState(null);
 
@@ -59,6 +59,38 @@ const ViewQuiz = () => {
 		"Do not refresh or close the browser window",
 		"Multiple tabs or windows are not allowed",
 	];
+
+	async function handleStartQuiz () {
+		try {
+			const currentTime = new Date()
+			if(quiz.startsAt > currentTime) {
+				alert('Quiz not started yet')
+				return
+			}
+			// {quizId, studentId, startedAt}
+			const response = await fetch(`${BASE_URL}/api/student/startquiz`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`
+				},
+				body: JSON.stringify({
+					quizId,
+					studentId: user._id,
+					startedAt: currentTime
+				})
+			})
+
+			if(response.ok) {
+				const data = await response.json()
+				navigate(`/quiz/${quizId}?attemptId=${data.attempt._id}`)
+			}else{
+				alert('Error starting quiz')
+			}
+		}catch(e) {
+			console.error(e)
+		}
+	}
 
 	return (
 		<div className=" pt-[50px] w-[85%] mx-auto">
@@ -138,7 +170,7 @@ const ViewQuiz = () => {
 
 					<div className="pt-4 border-t border-gray-200 flex items-center justify-end">
 						<button
-							onClick={() => navigate('/quiz/' + quizId)}
+							onClick={() => handleStartQuiz()}
 							className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
 						>
 							Start Quiz

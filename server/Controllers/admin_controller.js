@@ -6,7 +6,6 @@ const Quiz = require('../Models/quiz_model');
 
 dotenv.config();
 
-// Function to signup admin
 const signup = async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
@@ -14,7 +13,6 @@ const signup = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Signup the admin
         const newAdmin = await Admin.signup(name, email, phone, hashedPassword);
 
         const token = jwt.sign({ _id: newAdmin._id, email: newAdmin.email }, process.env.JWT_ADMIN_SECRET, {
@@ -28,7 +26,6 @@ const signup = async (req, res) => {
     }
 };
 
-// Function to login admin
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -37,7 +34,6 @@ const login = async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        // Generate token
         const token = jwt.sign({ _id: admin._id, email: admin.email }, process.env.JWT_ADMIN_SECRET, {
             expiresIn: '1h',
         });

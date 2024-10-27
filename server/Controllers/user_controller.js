@@ -16,7 +16,6 @@ dotenv.config();
     5. OTP will be verified and user will be signed up.
 */
 
-// Function to generate OTP
 const generateOTP = async (req, res) => {
 	try {
 		const { email, purpose } = req.body;
@@ -25,10 +24,8 @@ const generateOTP = async (req, res) => {
 			return res.status(400).json({ message: "Student already exists" });
 		}
 
-		// Generate OTP
 		const otp = await OTP.generateOTP(email, purpose);
 
-		// Send email
 		const subject = "Quiz App OTP";
 		const text = `Your OTP is ${otp}`;
 		await sendEmail(email, subject, text);
@@ -42,18 +39,15 @@ const generateOTP = async (req, res) => {
 	}
 };
 
-// Function to verify OTP and signup
 const verifyOTP = async (req, res) => {
     try {
         const { name, rollno, email, phone, password, otp, purpose } = req.body;
 
-        // Verify the OTP
         const isValid = await OTP.verifyOTP(email, otp, purpose);
         if (!isValid) {
             return res.status(400).json({ message: "Invalid OTP" });
         }
 
-        // Signup the user after successful OTP verification
         const newStudent = await Student.signup(name, rollno, email, phone, password);
 
         const token = jwt.sign({ email: newStudent.email }, process.env.JWT_SECRET, {
@@ -70,7 +64,6 @@ const verifyOTP = async (req, res) => {
 };
 
 
-// Login function
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -79,7 +72,6 @@ const login = async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        // Generate token
         const token = jwt.sign({ _id: student._id, email: student.email }, process.env.JWT_SECRET, {
             expiresIn: "6h",
         });

@@ -53,8 +53,6 @@ const ViewQuiz = () => {
 
 	const rules = [
 		"You must complete the quiz within the allocated time",
-		"Each question must be answered in sequence",
-		"You cannot go back to previous questions",
 		"Ensure stable internet connection during the quiz",
 		"Do not refresh or close the browser window",
 		"Multiple tabs or windows are not allowed",

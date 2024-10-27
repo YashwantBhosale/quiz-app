@@ -1,6 +1,6 @@
 # Quiz Application
 
-An interactive and fun quiz application where users can test their knowledge on various topics. This application provides multiple quiz categories, tracks scores, and offers instant feedback on answers.
+This is a simple web application developed as part of a task for my SDS (Software Development Section) induction. The application provides an interactive platform where users can test their knowledge across various topics through multiple quizes. It includes features like score tracking, feedback on answers, secure authentication, and an admin portal for quiz management.
 
 ## Table of Contents
 
